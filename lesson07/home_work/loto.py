@@ -57,3 +57,135 @@
 модуль random: http://docs.python.org/3/library/random.html
 
 """
+
+import random
+import math
+
+
+def lineIN():
+    a = []
+    q = False
+    a.append(random.randint(1, 89))
+    while len(a) != 5:
+        x = random.randint(1, 89)
+        for i in a:
+            if i // 10 == x // 10 or x in a:
+                q = True
+            else:
+                continue
+        if q == False:
+            a.append(x)
+            a.sort()
+        else:
+            q = False
+    return a
+
+def kartochka(a, gnumbers):
+    i = 0
+    q = False
+    while i < 3:
+        x = lineIN()
+        for j in gnumbers:
+            if j in x:
+                q = True
+            else:
+                continue
+        if q == False:
+            a.append(x)
+            gnumbers += x
+            gnumbers.sort()
+        else:
+            q = False
+            continue
+        i += 1
+    return a, gnumbers
+
+def transforma(a): # функция расширяет сгенерированные карточки 3 х 5, до 3 х 9 добавляя пробелы в пустые разряды карточки
+    for i in range(len(a)):
+        k = 0
+        while k < 9:
+            try:
+                if math.floor(a[i][k] / 10) == k:
+                    k += 1
+                else:
+                    a[i].insert(k, 91) # тут проблема с типами данных поэтому ставлю 91, потом отдельным циклом ставлю на место 91 - пробелы.
+                    k += 1
+            except IndexError:
+                a[i].append(91)
+                k += 1
+
+
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            if a[i][j] == 91:
+                a[i][j] = " "
+
+    return(a)
+
+
+a = []
+b = []
+gnumbers = [] # объявляю массив gnumbers, т.к. в нем ведется учет уникальных цифр для заполнения карточек.
+
+kartochka(a, gnumbers)
+kartochka(b, gnumbers)
+
+transforma(a)
+transforma(b)
+
+gnumbers = [] # очищаю массив gnumbers, т.к. буду его использовать для вытягивания уникальных бочонков.
+userHealth = 15
+enemyHealth = 15
+winCondition = False
+while True:
+    n = random.randint(1, 89)
+    if n in gnumbers:
+        continue
+    else:
+        gnumbers.append(n)
+
+    print("Карточка пользователя:")
+    for x in a:
+        print(x)
+    print("\n")
+
+    print("Карточка соперника:")
+    for x in b:
+        print(x)
+    print("\n")
+    print("=============")
+    print("Бочонок №", n)
+    print("=============")
+    print("Неразыгранных бочонков:", 89 - len(gnumbers) )
+    answer = input("Зачеркнуть цифру? (y/n):")
+    for i in range(len(a)):
+       if n in a[i] and answer == "y":
+           winCondition = True
+           a[i][a[i].index(n)] = " "
+           userHealth -= 1
+           break
+       elif n not in a[i] and answer == "n":
+           winCondition = True
+       else:
+           winCondition = False
+
+    if winCondition == False:
+        print("!!!ВЫ ПРОИГРАЛИ!!!")
+        break
+
+    for i in range(len(b)):
+       if n in b[i]:
+           b[i][b[i].index(n)] = " "
+           enemyHealth -= 1
+           break
+    if enemyHealth == 0:
+        print("!!!ПОБЕДИЛИ РОБОТЫ!!!")
+        break
+    elif userHealth == 0:
+        print("!!!ВЫ ПОБЕДИЛИ!!!")
+        break
+    print("ОСТАЛОСЬ ЗАЧЕРКНУТЬ:")
+    print("ПОЛЬЗОВАТЕЛЬ", userHealth)
+    print("КОМПЬЮТЕР", enemyHealth)
+
+
