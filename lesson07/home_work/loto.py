@@ -57,3 +57,122 @@
 модуль random: http://docs.python.org/3/library/random.html
 
 """
+
+import random
+import math
+
+
+def lineIN():
+    a = []
+    q = False
+    a.append(random.randint(1, 89))
+    while len(a) != 5:
+        x = random.randint(1, 89)
+        for i in a:
+            if i // 10 == x // 10 or x in a:
+                q = True
+            else:
+                continue
+        if q == False:
+            a.append(x)
+            a.sort()
+        else:
+            q = False
+    return a
+
+def kartochka(a, gnumbers):
+    i = 0
+    q = False
+    while i < 3:
+        x = lineIN()
+        for j in gnumbers:
+            if j in x:
+                q = True
+            else:
+                continue
+        if q == False:
+            a.append(x)
+            gnumbers += x
+            gnumbers.sort()
+        else:
+            q = False
+            continue
+        i += 1
+    return a, gnumbers
+
+def transforma(a):
+    for i in range(len(a)):
+        k = 0
+        while k < 8:
+            try:
+                if math.floor(a[i][k] / 10) == k:
+                    k += 1
+                    continue
+                else:
+                    a[i].insert(k, 91)
+                    k += 1
+
+            except IndexError:
+                a[i].append(91)
+
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            if a[i][j] == 91:
+                a[i][j] = " "
+
+    return(a)
+
+
+a = []
+b = []
+gnumbers = []
+
+kartochka(a, gnumbers)
+kartochka(b, gnumbers)
+
+
+print("\n Уникальные номера (для тестов):", gnumbers)
+print("\n")
+'''for x in a: #это карточки до добавления пробелов на пустых разрядах
+    print(x)
+print("\n")
+for x in b:
+    print(x)
+print("\n")'''
+
+transforma(a)
+transforma(b)
+
+
+
+gnumbers = []
+
+i = 0
+while i < 89:
+    while True:
+        n = random.randint(1, 89)
+        if n in gnumbers:
+            continue
+        else:
+            gnumbers.append(n)
+            break
+    print("Карточка пользователя:")
+    for x in a:
+        print(x)
+    print("\n")
+
+    print("Карточка соперника:")
+    for x in b:
+        print(x)
+    print("\n")
+    print("Бочонок №", n)
+    answer = input("Зачеркнуть цифру? (y/n):")
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            if a[i][j] == n and answer == "y":
+                print("Следующий ход.")
+            elif a[i][j] == n and answer == "n":
+                print("Вы проиграли.")
+            elif a[i][j] != n and answer == "n":
+                print("Следующий ход.")
+
